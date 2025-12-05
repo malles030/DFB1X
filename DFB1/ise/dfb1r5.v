@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 /* DFB1 is Copyright 2019-21 D Henderson.
-/* SDRAM controller is based on work Copyright S J Leary 
+/* SDRAM controller is based on work Copyright S J Leary
 /* Released under the terms of the GPLv2
 /* See LICENCE.TXT
 */
@@ -137,7 +137,7 @@ ARBDFB1 arbdfb1 (
 	._HLT(HLT),
 	._XHALT(XHALT),
 	.HIGHZ(HIGHZ),
-	
+
 	.STATE(state)
 );
 
@@ -171,11 +171,11 @@ wire lowspeed = DISABLE_FAST & resetblock & fpu & ( AS | ~ttram_access | ~rom_ac
 wire CPUCLK_D;
 wire clock_block;
 
-clockmux cm1 ( .clk0( CLKOSC ), 
-	.clk1( XCPUCLK  ), 
+clockmux cm1 ( .clk0( CLKOSC ),
+	.clk1( XCPUCLK  ),
 	.select( lowspeed ),
 	.active1( clock_block ),
-	.out_clock( CPUCLK_D ) 
+	.out_clock( CPUCLK_D )
 );
 
 /* RAM */
@@ -311,118 +311,118 @@ assign LED[3] = ~DSACK[0];		// dsp & part FPU
 assign LED[4] = ~STERM; // AltRAM
 assign LED[5] = ~(RST & FPUCS);	// reset active or FPU
 
-/* register section */
-always @(negedge CLKOSC) begin
-	if( spi_xfer_state != 'd0 ) begin
-		spi_xfer <= 1'b0;
-	end
-
-	if( ~(AS | DS | reg_access) ) begin
-		if( XRW ) begin // read
-			case( A[3:0] )
-				4'h0: begin
-					d_in <= 8'h1;
-				end
-				4'h2: begin
-					d_in <= reg_dfb;
-				end
-				4'h4: begin
-					d_in <= reg_spi_read_data;
-				end
-				4'h6: begin
-					d_in <= { reg_spi[7], 5'd0, reg_spi[1], reg_spi[0] };
-				end			
-			endcase
-		end
-		else begin // write to our register
-			case( A[3:0] )
-				4'h2: begin
-					reg_dfb <= D[7:0];
-				end
-				4'h6: begin
-					reg_spi[1] <= D[1];
-					reg_spi[0] <= D[0];
-				end
-				4'h4: begin
-					reg_spi_write_data <= D[7:0];
-					spi_xfer <= 1'b1;
-				end
-			endcase
-		end
-	end
-end
+///* register section */
+//always @(negedge CLKOSC) begin
+//	if( spi_xfer_state != 'd0 ) begin
+//		spi_xfer <= 1'b0;
+//	end
+//
+//	if( ~(AS | DS | reg_access) ) begin
+//		if( XRW ) begin // read
+//			case( A[3:0] )
+//				4'h0: begin
+//					d_in <= 8'h1;
+//				end
+//				4'h2: begin
+//					d_in <= reg_dfb;
+//				end
+//				4'h4: begin
+//					d_in <= reg_spi_read_data;
+//				end
+//				4'h6: begin
+//					d_in <= { reg_spi[7], 5'd0, reg_spi[1], reg_spi[0] };
+//				end
+//			endcase
+//		end
+//		else begin // write to our register
+//			case( A[3:0] )
+//				4'h2: begin
+//					reg_dfb <= D[7:0];
+//				end
+//				4'h6: begin
+//					reg_spi[1] <= D[1];
+//					reg_spi[0] <= D[0];
+//				end
+//				4'h4: begin
+//					reg_spi_write_data <= D[7:0];
+//					spi_xfer <= 1'b1;
+//				end
+//			endcase
+//		end
+//	end
+//end
 
 assign D[7:0] = ( AS | DS | reg_access | ~XRW ) ? 8'hz : d_in;
 
-always @(negedge CLKOSC) begin
-	if( spi_xfer )
-		reg_spi[7] <= 1'b1;
-	else if( spi_xfer_state == 'd0 )
-		reg_spi[7] <= 1'b0;
-	else
-		reg_spi[7] <= 1'b1;
-end
-
-wire SPICLK = reg_spi[1] ? KHZ500 : XCPUCLK;
-
-always @( negedge SPICLK ) begin
-
-	spi_clk <= 1'b0;
-	
-	if( spi_xfer_state != 'd0 ) begin
-		spi_xfer_state <= spi_xfer_state + 'd1;
-		if( spi_xfer_state % 2 == 0 ) // even
-			spi_clk <= 1'b0;
-		else
-			spi_clk <= 1'b1;
-	end
-	
-	case(spi_xfer_state)
-		'd0: begin 										// SPI IDLE
-			if( spi_xfer ) begin
-				spi_xfer_state <= 'd1;
-				spi_mosi <= reg_spi_write_data[7];
-			end
-		end
-		'd2: begin
-			reg_spi_read_data[7] <= P106;
-			spi_mosi <= reg_spi_write_data[6];
-		end
-		'd4: begin
-			reg_spi_read_data[6] <= P106;
-			spi_mosi <= reg_spi_write_data[5];
-		end
-		'd6: begin
-			reg_spi_read_data[5] <= P106;
-			spi_mosi <= reg_spi_write_data[4];
-		end
-		'd8: begin
-			reg_spi_read_data[4] <= P106;
-			spi_mosi <= reg_spi_write_data[3];
-		end
-		'd10: begin
-			reg_spi_read_data[3] <= P106;
-			spi_mosi <= reg_spi_write_data[2];
-		end
-		'd12: begin
-			reg_spi_read_data[2] <= P106;
-			spi_mosi <= reg_spi_write_data[1];
-		end
-		'd14: begin
-			reg_spi_read_data[1] <= P106;
-			spi_mosi <= reg_spi_write_data[0];
-		end
-		'd16: begin
-			reg_spi_read_data[0] <= P106;
-			spi_xfer_state <= 'd0;
-		end
-	endcase
-	
-	if( ~RST ) begin
-		spi_xfer_state <= 'd0;
-	end
-	
-end
+//always @(negedge CLKOSC) begin
+//	if( spi_xfer )
+//		reg_spi[7] <= 1'b1;
+//	else if( spi_xfer_state == 'd0 )
+//		reg_spi[7] <= 1'b0;
+//	else
+//		reg_spi[7] <= 1'b1;
+//end
+//
+//wire SPICLK = reg_spi[1] ? KHZ500 : XCPUCLK;
+//
+//always @( negedge SPICLK ) begin
+//
+//	spi_clk <= 1'b0;
+//
+//	if( spi_xfer_state != 'd0 ) begin
+//		spi_xfer_state <= spi_xfer_state + 'd1;
+//		if( spi_xfer_state % 2 == 0 ) // even
+//			spi_clk <= 1'b0;
+//		else
+//			spi_clk <= 1'b1;
+//	end
+//
+//	case(spi_xfer_state)
+//		'd0: begin 										// SPI IDLE
+//			if( spi_xfer ) begin
+//				spi_xfer_state <= 'd1;
+//				spi_mosi <= reg_spi_write_data[7];
+//			end
+//		end
+//		'd2: begin
+//			reg_spi_read_data[7] <= P106;
+//			spi_mosi <= reg_spi_write_data[6];
+//		end
+//		'd4: begin
+//			reg_spi_read_data[6] <= P106;
+//			spi_mosi <= reg_spi_write_data[5];
+//		end
+//		'd6: begin
+//			reg_spi_read_data[5] <= P106;
+//			spi_mosi <= reg_spi_write_data[4];
+//		end
+//		'd8: begin
+//			reg_spi_read_data[4] <= P106;
+//			spi_mosi <= reg_spi_write_data[3];
+//		end
+//		'd10: begin
+//			reg_spi_read_data[3] <= P106;
+//			spi_mosi <= reg_spi_write_data[2];
+//		end
+//		'd12: begin
+//			reg_spi_read_data[2] <= P106;
+//			spi_mosi <= reg_spi_write_data[1];
+//		end
+//		'd14: begin
+//			reg_spi_read_data[1] <= P106;
+//			spi_mosi <= reg_spi_write_data[0];
+//		end
+//		'd16: begin
+//			reg_spi_read_data[0] <= P106;
+//			spi_xfer_state <= 'd0;
+//		end
+//	endcase
+//
+//	if( ~RST ) begin
+//		spi_xfer_state <= 'd0;
+//	end
+//
+//end
 
 /*
 board layout:-
@@ -434,9 +434,9 @@ CLK  CS   3V3
 MISO MOSI GND
 */
 
-assign P110 = reg_spi[0]; // CS
-assign P50 = spi_clk; //reg_spi[2]; // CLK
-assign P61 = spi_mosi; //reg_spi[0]; // MOSI
+//assign P110 = reg_spi[0]; // CS
+//assign P50 = spi_clk; //reg_spi[2]; // CLK
+//assign P61 = spi_mosi; //reg_spi[0]; // MOSI
 
 
 
