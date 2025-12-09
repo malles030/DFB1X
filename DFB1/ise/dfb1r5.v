@@ -46,9 +46,9 @@ module dfb1r5(
 	output [1:5] LED,
 
 	output P50,	//CLK
-	output P61,	// MOSI
+	output P91,	// MOSI
 	input P106, // MISO
-	output P110, // CS
+	input D0, // For later use to detect bus speed change in register FF8007?
 
 	input   			CLKOSC,
 	input KHZ500,
@@ -114,6 +114,11 @@ always @(*) begin
 	DISABLE_FAST <= reg_dfb[3];
 end
 */
+
+// Mainboard ROM output Enable (active low) => Set to 1 if DFB1X is enabled,
+// turning ROM output off.
+assign P91 = DISABLE_n ? 1'b1 : 1'bz;
+
 wire [1:0] FPUSPEED = reg_dfb[5:4];
 
 wire HIGHZ;
