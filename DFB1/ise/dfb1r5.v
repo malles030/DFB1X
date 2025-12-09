@@ -17,7 +17,7 @@ module dfb1r5(
 	input OPTION,
 	output XHALT,
 	input EN_FLASH,
-	input ENABLE,
+	input DISABLE,
 	input			XBG,
 	inout			XBR,
 	output BMODE,
@@ -97,12 +97,12 @@ reg [5:0] spi_xfer_state = 'd0;
 reg spi_clk = 1'b0;
 reg spi_mosi = 1'b1;
 
-reg DISABLE = 1'b1;
+reg DISABLE_n = 1'b1;
 reg DISABLE_FLASH_ROM = 1'b1;
 reg DISABLE_ALTRAM = 1'b1;
 reg DISABLE_FAST = 1'b1;
 always @(posedge RST) begin
-	DISABLE <= ENABLE;
+	DISABLE_n <= DISABLE;
 	DISABLE_FLASH_ROM <= EN_FLASH;
 	DISABLE_ALTRAM <= ALTRAM;
 	DISABLE_FAST <= OPTION;
@@ -123,7 +123,7 @@ wire [3:0] state;
 wire hlt;
 /* optimise */
 ARBDFB1 arbdfb1 (
-	.DISABLED( DISABLE ),
+	.DISABLED( DISABLE_n ),
 	.CLOCK(~XCPUCLK),
 	._RST(RST),
 	._XAS(XAS),
@@ -276,9 +276,9 @@ FDCP ff_lds( .D( flds ), .C( XCPUCLK ), .CLR(~flds), .PRE( XAS & dsp_access ), .
 assign XAS = HIGHZ ? xas 			: 1'bz;
 assign UDS = HIGHZ ? fuds_d 	: 1'bz;
 assign LDS = HIGHZ ? flds_d 	: 1'bz;
-assign AVEC = ~DISABLE | AVECCYCLE | XDTACK;
+assign AVEC = ~DISABLE_n | AVECCYCLE | XDTACK;
 
-assign XDTACK = DISABLE ? 1'bz : ( FLASH_DTACK ? 1'bz : 1'b0 ); // inactive when accelerator enabled, becomes a bus slave when disabled
+assign XDTACK = DISABLE_n ? 1'bz : ( FLASH_DTACK ? 1'bz : 1'b0 ); // inactive when accelerator enabled, becomes a bus slave when disabled
 
 assign CPUCLK = CPUCLK_D;
 assign FPUCLK = FPUSPEED == 2'b00 ? CLKOSC : ( FPUSPEED == 2'b11 ? XCPUCLK : CLKOSC_2 ); // XCPUCLK; //CLKOSC_2;
@@ -300,8 +300,8 @@ assign BMODE =  HIGHZ ? 1'b0 : 1'bz;
 wire BERR_D = AS | ( berr_ram & ~berrcnt[6] ); // berrcnt[6] == no answer in 64 rings
 assign BERR = HIGHZ ? ( BERR_D ? 1'bz : 1'b0 ) : 1'bz;
 
-assign ROMCE = DISABLE ? rom_access : flash_access;
-assign ROMOE = DISABLE ? rom_access | ~XRW : flash_access | ~XRW;
+assign ROMCE = DISABLE_n ? rom_access : flash_access;
+assign ROMOE = DISABLE_n ? rom_access | ~XRW : flash_access | ~XRW;
 
 
 //assign ROM_A19 = 1'b0;// A[19];
