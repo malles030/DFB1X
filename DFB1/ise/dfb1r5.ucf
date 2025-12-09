@@ -36,7 +36,7 @@ NET "XBG" LOC = "P7" ;
 
 NET "XRW" LOC = "P34" ;
 NET "FPUCLK" LOC = "P35" ;
-NET "CLKRAM" LOC = "P38" ;
+NET "CLKRAM" LOC = "P111" ;
 NET "FC<0>" LOC = "P39" ;
 NET "FC<2>" LOC = "P40" ;
 NET "XAS" LOC = "P41" ;
@@ -93,7 +93,7 @@ NET "LED<4>" LOC = "P69" ;
 NET "LED<5>" LOC = "P70" ;
 
 NET "P110" LOC = "P110" ;
-NET "CLKOSC" LOC = "P111" ;
+NET "CLKOSC" LOC = "P38" ;
 NET "A<2>" LOC = "P112" ;
 NET "A<1>" LOC = "P113" ;
 NET "A<4>" LOC = "P115" ;
