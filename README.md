@@ -38,8 +38,11 @@ The 2024 released firmware employs the following jumper options:
 Jumper from left to right.
 
 OPTION2 -- inhibit acceleration. The CPU will not switch up to the installed oscillator speed and will instead follow the motherboard clock (normally 16MHz).
+
 OPTION1 -- this communicates the amount of SDRAM installed on the board to the CPLD. Open for 64MB, closed for 128.
+
 FLASH -- this disables the onboard flash ROM. You will boot and work with the ROM on the motherboard. Can be used if no flash chip is fitted.
+
 DISABLE -- this effectively turns off DFB1. The onboard CPU will be active again and the only interaction one can have with DFB1 is to flash a new ROM.
 
 ### Forks
