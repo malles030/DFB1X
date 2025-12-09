@@ -16,7 +16,7 @@ module dfb1r5(
 	input ALTRAM,
 	input OPTION,
 	output XHALT,
-	input EN_FLASH,
+	input FLASH,
 	input DISABLE,
 	input			XBG,
 	inout			XBR,
@@ -103,7 +103,7 @@ reg DISABLE_ALTRAM = 1'b1;
 reg DISABLE_FAST = 1'b1;
 always @(posedge RST) begin
 	DISABLE_n <= DISABLE;
-	DISABLE_FLASH_ROM <= EN_FLASH;
+	DISABLE_FLASH_ROM <= FLASH;
 	DISABLE_ALTRAM <= ALTRAM;
 	DISABLE_FAST <= OPTION;
 //	DISABLE <= reg_dfb[0];

@@ -29,7 +29,7 @@ NET "XDTACK" LOC = "P33" ;
 NET "ALTRAM" LOC = "P2" ;
 NET "OPTION" LOC = "P3" ;
 NET "XHALT" LOC = "P4" ;
-NET "EN_FLASH" LOC = "P5" ;
+NET "FLASH" LOC = "P5" ;
 NET "DISABLE" LOC = "P6" ;
 NET "XBG" LOC = "P7" ;
 
