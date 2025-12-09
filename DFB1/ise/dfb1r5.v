@@ -1,10 +1,10 @@
 `timescale 1ns / 1ps
 
 /* DFB1 is Copyright 2019-21 D Henderson.
-/* SDRAM controller is based on work Copyright S J Leary
-/* Released under the terms of the GPLv2
-/* See LICENCE.TXT
-*/
+ * SDRAM controller is based on work Copyright S J Leary
+ * Released under the terms of the GPLv2
+ * See LICENCE.TXT
+ */
 
 module dfb1r5(
 
@@ -41,7 +41,7 @@ module dfb1r5(
 	input				AS,
 	input [1:0] 	SIZ,
 	input				DS,
-	output ROM_A19,
+//	output ROM_A19,
 	inout [7:0] D,
 	output [1:5] LED,
 
@@ -303,7 +303,7 @@ assign ROMCE = DISABLE ? rom_access : flash_access;
 assign ROMOE = DISABLE ? rom_access | ~XRW : flash_access | ~XRW;
 
 
-assign ROM_A19 = 1'b0;// A[19];
+//assign ROM_A19 = 1'b0;// A[19];
 
 assign LED[1] = BGK; 	// board master
 assign LED[2] = lowspeed; // speed
@@ -433,11 +433,6 @@ P106 P61  GND
 CLK  CS   3V3
 MISO MOSI GND
 */
-
-//assign P110 = reg_spi[0]; // CS
-//assign P50 = spi_clk; //reg_spi[2]; // CLK
-//assign P61 = spi_mosi; //reg_spi[0]; // MOSI
-
 
 
 endmodule

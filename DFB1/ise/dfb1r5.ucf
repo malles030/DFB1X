@@ -74,7 +74,7 @@ NET "D<5>" LOC = "P58" ;
 NET "D<6>" LOC = "P59" ;
 
 NET "A<6>" LOC = "P117" ;
-NET "ROM_A19" LOC = "P118" ;
+#NET "ROM_A19" LOC = "P118" ;
 NET "A<5>" LOC = "P119" ;
 NET "A<8>" LOC = "P120" ;
 NET "A<7>" LOC = "P121" ;
