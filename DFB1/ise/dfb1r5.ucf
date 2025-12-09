@@ -85,7 +85,7 @@ NET "A<12>" LOC = "P128" ;
 NET "A<13>" LOC = "P129" ;
 
 NET "D<7>" LOC = "P60" ;
-NET "P61" LOC = "P61" ;
+NET "FPUCS" LOC = "P61" ;
 NET "LED<1>" LOC = "P64" ;
 NET "LED<2>" LOC = "P66" ;
 NET "LED<3>" LOC = "P68" ;
@@ -125,7 +125,7 @@ NET "MA<6>" LOC = "P86" ;
 NET "MA<5>" LOC = "P87" ;
 NET "MA<4>" LOC = "P88" ;
 
-NET "FPUCS" LOC = "P91" ;
+NET "P91" LOC = "P91" ;
 NET "STERM" LOC = "P92" ;
 NET "RAMWE" LOC = "P93" ;
 NET "CAS" LOC = "P94" ;
