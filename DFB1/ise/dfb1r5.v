@@ -14,7 +14,7 @@ module dfb1r5(
 	input   			XCPUCLK,
 	output FPUCLK,
 	input OPTION1,
-	input OPTION2,
+	input OPTION,
 	output XHALT,
 	input EN_FLASH,
 	input ENABLE,
@@ -104,7 +104,7 @@ reg DISABLE_FAST = 1'b1;
 always @(posedge RST) begin
 	DISABLE <= ENABLE;
 	DISABLE_FLASH_ROM <= EN_FLASH;
-	DISABLE_FAST <= OPTION2;
+	DISABLE_FAST <= OPTION;
 //	DISABLE <= reg_dfb[0];
 //	DISABLE_FLASH_ROM <= reg_dfb[1];
 end
