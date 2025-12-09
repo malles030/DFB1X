@@ -13,7 +13,7 @@ module dfb1r5(
 	inout	BERR,
 	input   			XCPUCLK,
 	output FPUCLK,
-	input OPTION1,
+	input ALTRAM,
 	input OPTION,
 	output XHALT,
 	input EN_FLASH,
@@ -104,6 +104,7 @@ reg DISABLE_FAST = 1'b1;
 always @(posedge RST) begin
 	DISABLE <= ENABLE;
 	DISABLE_FLASH_ROM <= EN_FLASH;
+	DISABLE_ALTRAM <= ALTRAM;
 	DISABLE_FAST <= OPTION;
 //	DISABLE <= reg_dfb[0];
 //	DISABLE_FLASH_ROM <= reg_dfb[1];
@@ -145,7 +146,7 @@ wire fpu = AS | {FC,A[19:16]} != 7'b1110010; // co-processor decode
 wire ttram_access = ~DISABLE_ALTRAM | ( A[27:24] == 'hF | A[27:24] == 'h0 );
 wire rom_access =  ~DISABLE_FLASH_ROM | A[27:20] != 8'h0E; // Flash ROM
 wire dsp_access = A[27:8] != 20'h0FFA2;
-wire berr_ram = OPTION1 ? A[26:24] != 3'b101 : A[27:24] != 4'b1001; // 128MB / 64 switch
+wire berr_ram = A[27:24] != 4'b1001; // 128MB suitable
 wire reg_access = A[31:4] != 28'h00F1DFB; // our register F1DFxx
 
 

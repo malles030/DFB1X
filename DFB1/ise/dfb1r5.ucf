@@ -26,7 +26,7 @@ NET "CPUCLK" LOC = "P32" ;
 NET "XDTACK" LOC = "P33" ;
 
 
-NET "OPTION1" LOC = "P2" ;
+NET "ALTRAM" LOC = "P2" ;
 NET "OPTION" LOC = "P3" ;
 NET "XHALT" LOC = "P4" ;
 NET "EN_FLASH" LOC = "P5" ;
